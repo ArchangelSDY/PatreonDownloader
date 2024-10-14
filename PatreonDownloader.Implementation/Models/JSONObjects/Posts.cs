@@ -126,6 +126,12 @@ namespace PatreonDownloader.Implementation.Models.JSONObjects.Posts
         public List<Data> Data { get; set; }
     }
 
+    public class AttachmentsMedia
+    {
+        [JsonProperty("data")]
+        public List<Data> Data { get; set; }
+    }
+
     public class Audio
     {
         [JsonProperty("data")]

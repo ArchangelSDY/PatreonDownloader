@@ -226,12 +226,12 @@ namespace PatreonDownloader.Implementation
 
                 _logger.Debug($"[{jsonEntry.Id}] Scanning attachment data");
                 //Attachments
-                if(jsonEntry.Relationships.AttachmentsMedia?.Data != null)
+                if(jsonEntry.Relationships.AttachmentsMedia?.Data != null && _patreonDownloaderSettings.SaveAttachments)
                 {
                     foreach (var attachment in jsonEntry.Relationships.AttachmentsMedia.Data)
                     {
                         _logger.Debug($"[{jsonEntry.Id} A-{attachment.Id}] Scanning attachment");
-                        if (attachment.Type != "media") //sanity check 
+                        if (attachment.Type != "media") //sanity check
                         {
                             string msg = $"Invalid attachment type for {attachment.Id}!!!";
                             _logger.Fatal($"[{jsonEntry.Id}] {msg}");
