@@ -18,6 +18,15 @@ namespace PatreonDownloader.App.Models
         [Option("campaign-images", Required = false, HelpText = "Download campaign's avatar and cover images", Default = false)]
         public bool SaveAvatarAndCover { get; set; }
 
+        [Option("no-media", Required = false, HelpText = "Do not download media", Default = false)]
+        public bool NoMedia { get; set; }
+
+        [Option("no-attachments", Required = false, HelpText = "Do not download attachments", Default = false)]
+        public bool NoAttachments { get; set; }
+
+        [Option("no-posts", Required = false, HelpText = "Do not download post files", Default = false)]
+        public bool NoPosts { get; set; }
+
         [Option("download-directory", Required = false, HelpText = "Directory to save all downloaded files in, default: #AppDirectory#/downloads/#CreatorName#.")]
         public string DownloadDirectory { get; set; }
 

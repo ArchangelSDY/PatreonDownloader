@@ -19,6 +19,12 @@ namespace PatreonDownloader.Implementation.Models
 
         public bool SaveAvatarAndCover { get; init; }
 
+        public bool SaveMedia { get; init; }
+
+        public bool SaveAttachments { get; init; }
+
+        public bool SavePost { get; init; }
+
         /// <summary>
         /// Create a new directory for every post and store files of said post in that directory
         /// </summary>
@@ -61,6 +67,9 @@ namespace PatreonDownloader.Implementation.Models
             SaveEmbeds = true;
             SaveJson = true;
             SaveAvatarAndCover = true;
+            SaveMedia = true;
+            SaveAttachments = true;
+            SavePost = true;
             IsUseSubDirectories = false;
             SubDirectoryPattern = "[%PostId%] %PublishedAt% %PostTitle%";
             FallbackToContentTypeFilenames = false;
