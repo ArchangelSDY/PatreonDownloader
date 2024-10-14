@@ -226,7 +226,7 @@ namespace PatreonDownloader.Implementation
 
                 _logger.Debug($"[{jsonEntry.Id}] Scanning attachment data");
                 //Attachments
-                if(jsonEntry.Relationships.AttachmentsMedia?.Data != null && _patreonDownloaderSettings.SaveAttachments)
+                if(jsonEntry.Relationships.AttachmentsMedia?.Data != null)
                 {
                     foreach (var attachment in jsonEntry.Relationships.AttachmentsMedia.Data)
                     {
@@ -236,6 +236,12 @@ namespace PatreonDownloader.Implementation
                             string msg = $"Invalid attachment type for {attachment.Id}!!!";
                             _logger.Fatal($"[{jsonEntry.Id}] {msg}");
                             OnCrawlerMessage(new CrawlerMessageEventArgs(CrawlerMessageType.Error, msg, jsonEntry.Id));
+                            continue;
+                        }
+
+                        if (!_patreonDownloaderSettings.SaveAttachments)
+                        {
+                            skippedIncludesList.Add(attachment.Id);
                             continue;
                         }
 
@@ -262,7 +268,7 @@ namespace PatreonDownloader.Implementation
 
                 _logger.Debug($"[{jsonEntry.Id}] Scanning media data");
                 //Media
-                if (jsonEntry.Relationships.Images?.Data != null && _patreonDownloaderSettings.SaveMedia)
+                if (jsonEntry.Relationships.Images?.Data != null)
                 {
                     foreach (var image in jsonEntry.Relationships.Images.Data)
                     {
@@ -272,6 +278,12 @@ namespace PatreonDownloader.Implementation
                             string msg = $"invalid media type for {image.Id}!!!";
                             _logger.Fatal($"[{jsonEntry.Id}] {msg}");
                             OnCrawlerMessage(new CrawlerMessageEventArgs(CrawlerMessageType.Error, msg, jsonEntry.Id));
+                            continue;
+                        }
+
+                        if (!_patreonDownloaderSettings.SaveImages)
+                        {
+                            skippedIncludesList.Add(image.Id);
                             continue;
                         }
 
@@ -355,43 +367,31 @@ namespace PatreonDownloader.Implementation
             foreach (var jsonEntry in jsonRoot.Included)
             {
                 _logger.Debug($"[{jsonEntry.Id}] Verification: Started");
-                if (jsonEntry.Type != "attachment" && jsonEntry.Type != "media")
+                if (jsonEntry.Type != "media" &&
+                    jsonEntry.Type != "user" && 
+                    jsonEntry.Type != "campaign" && 
+                    jsonEntry.Type != "access-rule" && 
+                    jsonEntry.Type != "reward" && 
+                    jsonEntry.Type != "poll" &&
+                    jsonEntry.Type != "poll_choice" &&
+                    jsonEntry.Type != "poll_response" &&
+                    jsonEntry.Type != "post_tag")
                 {
-                    if (jsonEntry.Type != "user" && 
-                        jsonEntry.Type != "campaign" && 
-                        jsonEntry.Type != "access-rule" && 
-                        jsonEntry.Type != "reward" && 
-                        jsonEntry.Type != "poll_choice" &&
-                        jsonEntry.Type != "poll_response" &&
-                        jsonEntry.Type != "post_tag")
-                    {
-                        string msg = $"Verification for {jsonEntry.Id}: Unknown type for \"included\": {jsonEntry.Type}";
-                        _logger.Error(msg);
-                        OnCrawlerMessage(new CrawlerMessageEventArgs(CrawlerMessageType.Error, msg));
-                    }
+                    string msg = $"Verification for {jsonEntry.Id}: Unknown type for \"included\": {jsonEntry.Type}";
+                    _logger.Error(msg);
+                    OnCrawlerMessage(new CrawlerMessageEventArgs(CrawlerMessageType.Error, msg));
                     continue;
                 }
 
                 _logger.Debug($"[{jsonEntry.Id}] Is a {jsonEntry.Type}");
 
-                if (jsonEntry.Type == "attachment" && _patreonDownloaderSettings.SaveAttachments)
+                if (jsonEntry.Type == "media")
                 {
-                    if (!skippedIncludesList.Any(x => x == jsonEntry.Id) && !crawledUrls.Any(x => x.Url == jsonEntry.Attributes.Url))
+                    if (!skippedIncludesList.Any(x => x == jsonEntry.Id)
+                        && !crawledUrls.Any(x => (x.Url == jsonEntry.Attributes.Url || x.Url == jsonEntry.Attributes.DownloadUrl)))
                     {
                         string msg =
                             $"Verification for {jsonEntry.Id}: Parsing verification failure! Attachment with this id might not referenced by any post.";
-                        _logger.Warn(msg);
-                        OnCrawlerMessage(new CrawlerMessageEventArgs(CrawlerMessageType.Warning, msg));
-                        continue;
-                    }
-                }
-
-                if (jsonEntry.Type == "media" && _patreonDownloaderSettings.SaveMedia)
-                {
-                    if (!skippedIncludesList.Any(x=>x == jsonEntry.Id) && !crawledUrls.Any(x => x.Url == jsonEntry.Attributes.DownloadUrl/* || x.DownloadUrl == jsonEntry.Attributes.ImageUrls.Original || x.DownloadUrl == jsonEntry.Attributes.ImageUrls.Default*/))
-                    {
-                        string msg =
-                            $"Verification for {jsonEntry.Id}: Parsing verification failure! Media with this id might not be referenced by any post.";
                         _logger.Warn(msg);
                         OnCrawlerMessage(new CrawlerMessageEventArgs(CrawlerMessageType.Warning, msg));
                         continue;

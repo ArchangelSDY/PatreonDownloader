@@ -19,7 +19,7 @@ namespace PatreonDownloader.Implementation.Models
 
         public bool SaveAvatarAndCover { get; init; }
 
-        public bool SaveMedia { get; init; }
+        public bool SaveImages { get; init; }
 
         public bool SaveAttachments { get; init; }
 
@@ -67,7 +67,7 @@ namespace PatreonDownloader.Implementation.Models
             SaveEmbeds = true;
             SaveJson = true;
             SaveAvatarAndCover = true;
-            SaveMedia = true;
+            SaveImages = true;
             SaveAttachments = true;
             SavePost = true;
             IsUseSubDirectories = false;

@@ -153,7 +153,7 @@ namespace PatreonDownloader.App
                 SaveAvatarAndCover = commandLineOptions.SaveAvatarAndCover,
                 SaveDescriptions = commandLineOptions.SaveDescriptions,
                 SaveEmbeds = commandLineOptions.SaveEmbeds,
-                SaveMedia = !commandLineOptions.NoMedia,
+                SaveImages = !commandLineOptions.NoImages,
                 SaveAttachments = !commandLineOptions.NoAttachments,
                 SavePost = !commandLineOptions.NoPosts,
                 SaveJson = commandLineOptions.SaveJson,
