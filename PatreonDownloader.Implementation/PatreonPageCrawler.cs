@@ -262,7 +262,7 @@ namespace PatreonDownloader.Implementation
 
                 _logger.Debug($"[{jsonEntry.Id}] Scanning media data");
                 //Media
-                if (jsonEntry.Relationships.Images?.Data != null)
+                if (jsonEntry.Relationships.Images?.Data != null && _patreonDownloaderSettings.SaveMedia)
                 {
                     foreach (var image in jsonEntry.Relationships.Images.Data)
                     {
@@ -336,10 +336,13 @@ namespace PatreonDownloader.Implementation
 
                 if (!string.IsNullOrEmpty(entry.Url))
                 {
-                    entry.UrlType = PatreonCrawledUrlType.PostFile;
-                    _logger.Info($"[{jsonEntry.Id}] New entry: {entry.Url}");
-                    crawledUrls.Add(entry);
-                    OnNewCrawledUrl(new NewCrawledUrlEventArgs((CrawledUrl)entry.Clone()));
+                    if (_patreonDownloaderSettings.SavePost)
+                    {
+                        entry.UrlType = PatreonCrawledUrlType.PostFile;
+                        _logger.Info($"[{jsonEntry.Id}] New entry: {entry.Url}");
+                        crawledUrls.Add(entry);
+                        OnNewCrawledUrl(new NewCrawledUrlEventArgs((CrawledUrl)entry.Clone()));
+                    }
                 }
                 else
                 {
@@ -371,7 +374,7 @@ namespace PatreonDownloader.Implementation
 
                 _logger.Debug($"[{jsonEntry.Id}] Is a {jsonEntry.Type}");
 
-                if (jsonEntry.Type == "attachment")
+                if (jsonEntry.Type == "attachment" && _patreonDownloaderSettings.SaveAttachments)
                 {
                     if (!skippedIncludesList.Any(x => x == jsonEntry.Id) && !crawledUrls.Any(x => x.Url == jsonEntry.Attributes.Url))
                     {
@@ -383,7 +386,7 @@ namespace PatreonDownloader.Implementation
                     }
                 }
 
-                if (jsonEntry.Type == "media")
+                if (jsonEntry.Type == "media" && _patreonDownloaderSettings.SaveMedia)
                 {
                     if (!skippedIncludesList.Any(x=>x == jsonEntry.Id) && !crawledUrls.Any(x => x.Url == jsonEntry.Attributes.DownloadUrl/* || x.DownloadUrl == jsonEntry.Attributes.ImageUrls.Original || x.DownloadUrl == jsonEntry.Attributes.ImageUrls.Default*/))
                     {
