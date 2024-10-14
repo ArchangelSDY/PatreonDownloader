@@ -126,6 +126,12 @@ namespace PatreonDownloader.Implementation.Models.JSONObjects.Posts
         public List<Data> Data { get; set; }
     }
 
+    public class AttachmentsMedia
+    {
+        [JsonProperty("data")]
+        public List<Data> Data { get; set; }
+    }
+
     public class Audio
     {
         [JsonProperty("data")]
@@ -192,8 +198,8 @@ namespace PatreonDownloader.Implementation.Models.JSONObjects.Posts
     {
         [JsonProperty("access_rules")]
         public AccessRules AccessRules { get; set; }
-        [JsonProperty("attachments")]
-        public Attachments Attachments { get; set; }
+        [JsonProperty("attachments_media")]
+        public AttachmentsMedia AttachmentsMedia { get; set; }
         [JsonProperty("audio")]
         public Audio Audio { get; set; }
         [JsonProperty("campaign")]
